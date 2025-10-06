@@ -1,0 +1,23 @@
+
+<div class="container">
+  <h1>Staff</h1>
+  <button routerLink="/staff/new">Register New Staff</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Degree</th>
+        <th>Timing</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let staffMember of staff">
+        <td>{{ staffMember.name }}</td>
+        <td>{{ staffMember.role }}</td>
+        <td>{{ staffMember.degree }}</td>
+        <td>{{ staffMember.timing }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
