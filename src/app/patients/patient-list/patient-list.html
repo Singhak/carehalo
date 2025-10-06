@@ -1,0 +1,25 @@
+<div>
+  <h2>Patients</h2>
+  <button routerLink="/patients/new">Register New Patient</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date of Birth</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let patient of patients">
+        <td>{{ patient.fullName }}</td>
+        <td>{{ patient.dob }}</td>
+        <td>{{ patient.email }}</td>
+        <td>
+          <button [routerLink]="['/patients', patient.id, 'edit']">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
