@@ -1,0 +1,22 @@
+<div class="dynamic-form-container">
+  <h2>{{ formTitle }}</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="dynamic-form">
+    <div class="form-grid">
+      <div *ngFor="let field of formFields" class="form-field" [style.display]="shouldDisplay(field) ? 'flex' : 'none'">
+        <label [for]="field.name">{{ field.label }}</label>
+        <ng-container [ngSwitch]="field.type">
+          <input *ngSwitchCase="'text'" [type]="field.type" [id]="field.name" [formControlName]="field.name">
+          <input *ngSwitchCase="'email'" [type]="field.type" [id]="field.name" [formControlName]="field.name">
+          <input *ngSwitchCase="'date'" [type]="field.type" [id]="field.name" [formControlName]="field.name">
+          <select *ngSwitchCase="'select'" [id]="field.name" [formControlName]="field.name">
+            <option value="" disabled>Select an option</option>
+            <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </ng-container>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" [disabled]="!form.valid">{{ submitButtonText }}</button>
+    </div>
+  </form>
+</div>
