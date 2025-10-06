@@ -1,0 +1,9 @@
+
+<div class="container">
+  <h1>Billing</h1>
+  <ul>
+    <li *ngFor="let record of billingRecords">
+      {{ record.date | date: 'shortDate' }} - {{ record.amount | currency }} - {{ record.status }}
+    </li>
+  </ul>
+</div>
