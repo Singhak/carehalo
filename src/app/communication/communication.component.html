@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="user-selection">
+    <h2>Select Users</h2>
+
+    <div class="filter-form">
+      <select [(ngModel)]="userType" (change)="filterUsers()">
+        <option value="all">All</option>
+        <option value="patient">Patients</option>
+        <option value="doctor">Doctors</option>
+        <option value="staff">Staff</option>
+      </select>
+      <!-- Add more filters for age, gender, location as needed -->
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" (change)="selectAll($event)"></th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td><input type="checkbox" [(ngModel)]="user.selected"></td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.type }}</td>
+          <td>{{ user.phone }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="message-composer">
+    <h2>Compose Message</h2>
+    <textarea [(ngModel)]="message" placeholder="Enter your message here..."></textarea>
+    <button (click)="sendMessage()" [disabled]="!isAnyUserSelected()">Send Message</button>
+  </div>
+</div>

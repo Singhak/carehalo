@@ -32,5 +32,9 @@ export const routes: Routes = [
     path: 'auth',
     loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
   },
+  {
+    path: 'communication',
+    loadChildren: () => import('./communication/communication.routes').then(m => m.communicationRoutes)
+  },
   { path: '**', component: NotFoundComponent }
 ];
