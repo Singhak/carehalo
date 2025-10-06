@@ -1,0 +1,9 @@
+
+<div class="container">
+  <h1>Appointments</h1>
+  <ul>
+    <li *ngFor="let appointment of appointments">
+      {{ appointment.startTime | date: 'short' }} - {{ appointment.status }}
+    </li>
+  </ul>
+</div>
