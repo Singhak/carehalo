@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -31,5 +30,9 @@ export class PrescriptionService {
 
   deletePrescription(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  sharePrescription(prescriptionId: string): Observable<any> {
+    return this.http.post('/api/share', { prescriptionId });
   }
 }
