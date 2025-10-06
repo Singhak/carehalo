@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "web-app": {
+    "carehalo-web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -58,10 +58,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "web-app:build:production"
+              "buildTarget": "carehalo-web:build:production"
             },
             "development": {
-              "buildTarget": "web-app:build:development"
+              "buildTarget": "carehalo-web:build:development"
             }
           },
           "defaultConfiguration": "development"
