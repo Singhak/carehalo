@@ -1,0 +1,9 @@
+
+<div class="container">
+  <h1>Prescriptions</h1>
+  <ul>
+    <li *ngFor="let prescription of prescriptions">
+      {{ prescription.medication }} - {{ prescription.dosage }}
+    </li>
+  </ul>
+</div>
