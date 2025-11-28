@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { PatientsService } from '../patients/patient.service';
 import { StaffService } from '../core/staff.service';
 import { Patient, Staff } from '@cflock/shared-models';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import { CommunicationService } from '../core/communication.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 interface UserView {
   id: string;
@@ -18,7 +20,7 @@ interface UserView {
 @Component({
   selector: 'app-communication',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatProgressBarModule],
   templateUrl: './communication.component.html',
   styleUrls: ['./communication.component.scss'],
 })
@@ -27,6 +29,8 @@ export class CommunicationComponent implements OnInit {
   filteredUsers: UserView[] = [];
   userType: 'all' | 'patient' | 'doctor' | 'staff' = 'all';
   message: string = '';
+  loading = true;
+  error: string | null = null;
 
   constructor(
     private patientService: PatientsService,
@@ -39,28 +43,38 @@ export class CommunicationComponent implements OnInit {
   }
 
   loadUsers() {
+    this.loading = true;
+    this.error = null;
     forkJoin({
-      patients: this.patientService.list() as Promise<Patient[]>,
-      staff: this.staffService.getStaff(),
-    }).subscribe(({ patients, staff }) => {
-      const patientUsers: UserView[] = patients.map(p => ({
-        id: p.id,
-        name: p.fullName,
-        type: 'patient',
-        phone: p.phone || '',
-        selected: false,
-      }));
+      patients: (this.patientService.list() as Promise<Patient[]>).then(p => p || []).catch(() => []),
+      staff: this.staffService.getStaff().pipe(catchError(() => of([]))),
+    }).pipe(
+      finalize(() => this.loading = false)
+    ).subscribe({
+      next: ({ patients, staff }) => {
+        const patientUsers: UserView[] = patients.map(p => ({
+          id: p.id,
+          name: p.fullName,
+          type: 'patient',
+          phone: p.phone || '',
+          selected: false,
+        }));
 
-      const staffUsers: UserView[] = staff.map(s => ({
-        id: s.id,
-        name: s.name,
-        type: s.role === 'doctor' ? 'doctor' : 'staff',
-        phone: s.phone || '',
-        selected: false,
-      }));
+        const staffUsers: UserView[] = staff.map(s => ({
+          id: s.id,
+          name: s.name,
+          type: s.role === 'doctor' ? 'doctor' : 'staff',
+          phone: s.phone || '',
+          selected: false,
+        }));
 
-      this.allUsers = [...patientUsers, ...staffUsers];
-      this.filterUsers();
+        this.allUsers = [...patientUsers, ...staffUsers];
+        this.filterUsers();
+      },
+      error: err => {
+        this.error = 'Failed to load users.';
+        console.error(err);
+      }
     });
   }
 
