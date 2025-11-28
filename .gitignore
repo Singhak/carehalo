@@ -1,35 +1,50 @@
-libs/tsconfig.json
-libs/data-access-interfaces/appointmentRepository.js
-libs/data-access-interfaces/appointmentRepository.ts
-libs/data-access-interfaces/billingRepository.js
-libs/data-access-interfaces/billingRepository.ts
-libs/data-access-interfaces/hospitalRepository.js
-libs/data-access-interfaces/hospitalRepository.ts
-libs/data-access-interfaces/index.js
-libs/data-access-interfaces/index.ts
-libs/data-access-interfaces/patientRepository.js
-libs/data-access-interfaces/patientRepository.ts
-libs/data-access-interfaces/prescriptionRepository.js
-libs/data-access-interfaces/prescriptionRepository.ts
-libs/data-access-interfaces/staffRepository.js
-libs/data-access-interfaces/staffRepository.ts
-libs/shared-models/appointment.js
-libs/shared-models/appointment.ts
-libs/shared-models/billing.js
-libs/shared-models/billing.ts
-libs/shared-models/hospital.js
-libs/shared-models/hospital.ts
-libs/shared-models/index.js
-libs/shared-models/index.ts
-libs/shared-models/patient.js
-libs/shared-models/patient.ts
-libs/shared-models/prescription.js
-libs/shared-models/prescription.ts
-libs/shared-models/staff.js
-libs/shared-models/staff.ts
-.vscode/extensions.json
-.vscode/launch.json
-.vscode/tasks.json
-.vscode/extensions.json
-.vscode/launch.json
-.vscode/tasks.json
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json
+.firebase/
+libs/
