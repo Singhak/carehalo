@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { NotFoundComponent } from './not-found.component';
+import { AuthLayoutComponent } from './auth/auth-layout.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -30,6 +31,7 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
+    component: AuthLayoutComponent,
     loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
   },
   {
