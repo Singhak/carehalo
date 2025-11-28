@@ -1,14 +1,10 @@
 import { Routes } from '@angular/router';
-import { StaffRegistrationComponent } from './staff-registration/staff-registration';
-import { StaffComponent } from './staff.component';
+import { StaffListComponent } from './staff-list/staff-list';
+import { StaffRegistration } from './staff-registration/staff-registration';
+import { StaffEditComponent } from './staff-edit/staff-edit';
 
 export const STAFF_ROUTES: Routes = [
-  {
-    path: '',
-    component: StaffComponent
-  },
-  {
-    path: 'new',
-    component: StaffRegistrationComponent
-  }
+  { path: '', component: StaffListComponent },
+  { path: 'new', component: StaffRegistration }
+  , { path: ':id/edit', component: StaffEditComponent }
 ];

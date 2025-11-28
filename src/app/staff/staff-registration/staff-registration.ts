@@ -1,19 +1,26 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Staff } from '@cflock/shared-models';
-import { StaffService } from '../../core/staff.service';
 import { DynamicFormComponent } from '../../core/dynamic-form/dynamic-form.component';
 import { FormField } from '../../core/dynamic-form/form-field.model';
+import { StaffService } from '../staff.service';
+import { Router } from '@angular/router';
+import { ToastService } from '../../core/toast/toast.service';
 
 @Component({
   selector: 'app-staff-registration',
   standalone: true,
   imports: [CommonModule, DynamicFormComponent],
-  template: `<app-dynamic-form [formFields]="staffFormFields" formTitle="Staff Registration" (formSubmit)="onSubmit($event)"></app-dynamic-form>`,
+  template: `<app-dynamic-form
+    [formFields]="staffFormFields"
+    formTitle="Staff Registration"
+    (formSubmit)="onSubmit($event)"
+    submitButtonText="Create Staff"
+    [resetOnSubmit]="true"
+  ></app-dynamic-form>`,
 })
-export class StaffRegistrationComponent {
+export class StaffRegistration {
   staffFormFields: FormField[] = [
-    { name: 'name', label: 'Full Name', type: 'text', required: true },
+    { name: 'fullName', label: 'Full Name', type: 'text', required: true },
     {
       name: 'role',
       label: 'Role',
@@ -23,31 +30,26 @@ export class StaffRegistrationComponent {
         { value: 'nurse', label: 'Nurse' },
         { value: 'admin', label: 'Admin' },
       ],
-      required: true
+      required: true,
     },
     { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'phone', label: 'Phone', type: 'text' },
+  { name: 'phone', label: 'Phone', type: 'phone' },
     { name: 'address', label: 'Address', type: 'text' },
-    {
-      name: 'degree',
-      label: 'Degree',
-      type: 'text',
-      conditionalDisplay: (formValue) => formValue.role === 'doctor'
-    },
-    {
-      name: 'timing',
-      label: 'Timing',
-      type: 'text',
-      conditionalDisplay: (formValue) => formValue.role === 'doctor'
-    },
+    { name: 'degree', label: 'Degree', type: 'text', conditionalDisplay: (formValue) => formValue.role === 'doctor' },
+    { name: 'timing', label: 'Timing', type: 'text', conditionalDisplay: (formValue) => formValue.role === 'doctor' },
   ];
 
-  constructor(private staffService: StaffService) { }
+  constructor(private staffService: StaffService, private router: Router, private toast: ToastService) {}
 
-  onSubmit(staff: Staff) {
-    this.staffService.createStaff(staff).subscribe(() => {
-      console.log('Staff registered successfully');
-      // Optionally, you can reset the form here if the dynamic form component doesn't do it.
-    });
+  async onSubmit(staff: any) {
+    try {
+      await this.staffService.create(staff);
+      console.log('Staff created successfully');
+      // navigate back to staff list after creation
+      this.toast.success('Staff created successfully');
+      this.router.navigate(['/staff']);
+    } catch (error) {
+      console.error('Error creating staff', error);
+    }
   }
 }
