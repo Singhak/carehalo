@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center table-header">
+    <h2 class="mb-0">Appointments</h2>
+  </div>
+
+  <div class="table-container-wrapper">
+    <mat-form-field appearance="outline">
+      <mat-label>Filter Appointments</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Search by status, etc."
+        #input
+      />
+    </mat-form-field>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="table table-striped table-hover mb-0" *ngIf="!loading && !error">
+
+        <!-- Patient ID Column -->
+        <ng-container matColumnDef="patientId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient ID</th>
+          <td mat-cell *matCellDef="let appointment">{{ appointment.patientId }}</td>
+        </ng-container>
+
+        <!-- Staff ID Column -->
+        <ng-container matColumnDef="staffId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff ID</th>
+          <td mat-cell *matCellDef="let appointment">{{ appointment.staffId }}</td>
+        </ng-container>
+
+        <!-- Start Time Column -->
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Time</th>
+          <td mat-cell *matCellDef="let appointment">{{ appointment.startTime | date: 'short' }}</td>
+        </ng-container>
+
+        <!-- End Time Column -->
+        <ng-container matColumnDef="endTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>End Time</th>
+          <td mat-cell *matCellDef="let appointment">{{ appointment.endTime | date: 'short' }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let appointment">{{ appointment.status }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5">No data matching the filter "{{input.value}}"</td>
+        </tr>
+      </table>
+    </div>
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      showFirstLastButtons
+      *ngIf="!loading && !error"
+    ></mat-paginator>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "lib",
+    "rootDir": "../..",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "@cflock/shared-models": ["../../libs/shared-models"],
+      "@cflock/data-access-interfaces": ["../../libs/data-access-interfaces"]
+    }
+  },
+  "include": ["src", "../../libs/**/*"]
+}

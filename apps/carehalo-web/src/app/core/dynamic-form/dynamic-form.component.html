@@ -1,0 +1,42 @@
+<div class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title text-center mb-3">{{ formTitle }}</h3>
+      <div *ngIf="showSuccess" class="alert alert-success text-center" role="alert">{{ submitButtonText }} successful</div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <div *ngFor="let field of formFields" class="col-12 col-md-6">
+            <div *ngIf="shouldDisplay(field)">
+              <div *ngIf="getControl(field.name) as control">
+                <div class="mb-2">
+                  <label [for]="field.name" class="form-label">{{ field.label }}</label>
+                  <ng-container [ngSwitch]="field.type">
+                    <input *ngSwitchCase="'text'" class="form-control" [type]="field.type" [id]="field.name" [formControlName]="field.name">
+                    <input *ngSwitchCase="'email'" class="form-control" [type]="field.type" [id]="field.name" [formControlName]="field.name">
+                    <input *ngSwitchCase="'date'" class="form-control" [type]="field.type" [id]="field.name" [formControlName]="field.name">
+                    <textarea *ngSwitchCase="'textarea'" class="form-control" [id]="field.name" [formControlName]="field.name" rows="3"></textarea>
+                    <input *ngSwitchCase="'phone'" class="form-control" type="tel" [id]="field.name" [formControlName]="field.name">
+                    <select *ngSwitchCase="'select'" class="form-select" [id]="field.name" [formControlName]="field.name">
+                      <option value="" disabled>Select an option</option>
+                      <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
+                    </select>
+                  </ng-container>
+                  <div class="invalid-feedback d-block" [hidden]="!(control.invalid && (control.dirty || control.touched))">
+                    <div *ngIf="control.errors?.['required']">{{ field.label }} is required.</div>
+                    <div *ngIf="control.errors?.['email']">Please enter a valid email address.</div>
+                    <div *ngIf="control.errors?.['pattern']">{{ field.label }} has an invalid format.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-primary" [disabled]="!form.valid">{{ submitButtonText }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
