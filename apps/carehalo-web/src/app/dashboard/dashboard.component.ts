@@ -1,3 +1,4 @@
+
 import { Component, OnInit, Inject, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -7,11 +8,20 @@ import { StaffService } from '../core/staff.service';
 import { forkJoin, of, from } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Patient, Appointment, Staff } from '@cflock/shared-models';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, NgxChartsModule],
+  imports: [
+    CommonModule,
+    NgxChartsModule,
+    MatCardModule,
+    MatGridListModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -35,11 +45,9 @@ export class DashboardComponent implements OnInit {
 
   loadDashboardData() {
     forkJoin({
-      // Convert the Promise from patientService.list() to an Observable using `from`.
-      // Then, use .pipe() for operators.
       patients: from(this.patientService.list()).pipe(
-        map(result => (result || []) as Patient[]), // Ensure we have an array, even if the promise resolves to undefined.
-        catchError(() => of([] as Patient[])) // If the promise rejects, return an empty array.
+        map(result => (result || []) as Patient[]),
+        catchError(() => of([] as Patient[]))
       ),
       appointments: this.appointmentService.getAppointments().pipe(catchError(() => of([] as Appointment[]))),
       staff: this.staffService.getStaff().pipe(catchError(() => of([] as Staff[]))),
@@ -50,11 +58,11 @@ export class DashboardComponent implements OnInit {
         this.processDoctorPerformance(appointments, staff);
         this.processAppointmentsOverTime(appointments);
         this.processAppointmentStatus(appointments);
-        this.isLoading = false; // Turn off loading indicator on success
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Dashboard data loading failed:', err);
-        this.isLoading = false; // Also turn off on error
+        this.isLoading = false;
       }
     });
   }

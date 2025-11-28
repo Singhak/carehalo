@@ -1,18 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StaffService } from '../staff.service';
-import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { AgGridModule } from 'ag-grid-angular';
+import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { StaffDetailsComponent } from '../staff-details/staff-details';
-import { Subscription } from 'rxjs';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { StaffService } from '../staff.service';
+import { Staff } from '@cflock/shared-models';
 
 @Component({
   selector: 'app-staff-list',
@@ -20,81 +17,60 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   imports: [
     CommonModule,
     RouterModule,
-    MatIconModule,
-    MatTooltipModule,
+    AgGridModule,
+    MatCardModule,
     MatButtonModule,
-    MatDialogModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
     MatFormFieldModule,
+    MatInputModule,
   ],
   templateUrl: './staff-list.html',
   styleUrls: ['./staff-list.scss'],
 })
-export class StaffListComponent implements OnInit, OnDestroy, AfterViewInit {
-  displayedColumns: string[] = ['fullName', 'role', 'email', 'actions'];
-  dataSource = new MatTableDataSource<any>();
-  private routerSub?: Subscription;
+export class StaffListComponent implements OnInit {
+  private gridApi!: GridApi<Staff>;
+  public columnDefs: ColDef[] = [
+    { headerName: 'Name', field: 'fullName', sortable: true, filter: 'agTextColumnFilter' },
+    { headerName: 'Role', field: 'role', sortable: true, filter: 'agTextColumnFilter' },
+    { headerName: 'Email', field: 'email', sortable: true, filter: 'agTextColumnFilter' },
+    {
+      headerName: 'Actions',
+      cellRenderer: (params: any) => {
+        return `<a href="/staff/${params.data.id}/edit" mat-button color="primary">Edit</a>`;
+      },
+      flex: 1,
+    },
+  ];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  public defaultColDef: ColDef = {
+    flex: 1,
+    minWidth: 150,
+    resizable: true,
+  };
 
-  constructor(
-    private staffService: StaffService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  public rowData: Staff[] = [];
 
-  ngOnInit(): void {
-    // initial load
-    this.load();
+  constructor(private staffService: StaffService) {}
 
-    // reload whenever navigation ends on /staff so newly created/edited entries appear
-    this.routerSub = this.router.events.subscribe((ev) => {
-      if (ev instanceof NavigationEnd) {
-        // Use urlAfterRedirects to handle router redirects
-        const url = ev.urlAfterRedirects || ev.url;
-        if (url && (url === '/staff' || url.startsWith('/staff'))) {
-          this.load();
-        }
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.routerSub?.unsubscribe();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-  async load() {
+  async ngOnInit() {
     try {
-      const res: any = await this.staffService.list();
-      this.dataSource.data = res || [];
-    } catch (e) {
-      console.error('Failed to load staff', e);
+      this.rowData = (await this.staffService.list()) as Staff[];
+    } catch (error) {
+      console.error('Error fetching staff', error);
     }
+  }
+
+  onGridReady(params: GridReadyEvent<Staff>) {
+    this.gridApi = params.api;
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
-  openDetails(staff: any) {
-    // open dialog with staff data; if only id is passed we could fetch details here
-    this.dialog.open(StaffDetailsComponent, {
-      data: staff,
-      width: '520px',
+    this.gridApi.setFilterModel({
+      fullName: {
+        filterType: 'text',
+        type: 'contains',
+        filter: filterValue,
+      },
     });
   }
 }
