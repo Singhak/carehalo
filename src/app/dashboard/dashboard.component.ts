@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { PatientsService } from '../patients/patient.service';
 import { AppointmentService } from '../core/appointment.service';
 import { StaffService } from '../core/staff.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of, from } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Patient, Appointment, Staff } from '@cflock/shared-models';
 
 @Component({
@@ -20,9 +21,10 @@ export class DashboardComponent implements OnInit {
   doctorPerformanceData: any[] = [];
   appointmentsOverTimeData: any[] = [];
   appointmentStatusData: any[] = [];
+  isLoading = true; // Add a loading flag for better UX
 
   constructor(
-    private patientService: PatientsService,
+    @Inject(forwardRef(() => PatientsService)) private patientService: PatientsService,
     private appointmentService: AppointmentService,
     private staffService: StaffService
   ) {}
@@ -33,15 +35,27 @@ export class DashboardComponent implements OnInit {
 
   loadDashboardData() {
     forkJoin({
-      patients: this.patientService.list() as Promise<Patient[]>,
-      appointments: this.appointmentService.getAppointments(),
-      staff: this.staffService.getStaff(),
-    }).subscribe(({ patients, appointments, staff }) => {
-      this.processPatientVisits(appointments, patients);
-      this.processPatientAge(patients);
-      this.processDoctorPerformance(appointments, staff);
-      this.processAppointmentsOverTime(appointments);
-      this.processAppointmentStatus(appointments);
+      // Convert the Promise from patientService.list() to an Observable using `from`.
+      // Then, use .pipe() for operators.
+      patients: from(this.patientService.list()).pipe(
+        map(result => (result || []) as Patient[]), // Ensure we have an array, even if the promise resolves to undefined.
+        catchError(() => of([] as Patient[])) // If the promise rejects, return an empty array.
+      ),
+      appointments: this.appointmentService.getAppointments().pipe(catchError(() => of([] as Appointment[]))),
+      staff: this.staffService.getStaff().pipe(catchError(() => of([] as Staff[]))),
+    }).subscribe({
+      next: ({ patients, appointments, staff }) => {
+        this.processPatientVisits(appointments, patients);
+        this.processPatientAge(patients);
+        this.processDoctorPerformance(appointments, staff);
+        this.processAppointmentsOverTime(appointments);
+        this.processAppointmentStatus(appointments);
+        this.isLoading = false; // Turn off loading indicator on success
+      },
+      error: (err) => {
+        console.error('Dashboard data loading failed:', err);
+        this.isLoading = false; // Also turn off on error
+      }
     });
   }
 
