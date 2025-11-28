@@ -1,0 +1,22 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+        <div class="brand-logo">CH</div>
+        <div class="brand-text">
+          <div class="brand-name">CareHalo</div>
+          <div class="brand-sub">Clinic Dashboard</div>
+        </div>
+    </div>
+  </div>
+
+  <mat-nav-list class="sidebar-list">
+    <a mat-list-item class="menu-item" *ngFor="let item of menuItems$ | async" [routerLink]="item.link" routerLinkActive="active">
+      <span class="material-icons menu-icon">{{ item.icon || 'chevron_right' }}</span>
+      <span class="menu-label">{{ item.label }}</span>
+    </a>
+  </mat-nav-list>
+
+  <div class="logout-button" *ngIf="(authService.getUserRole() | async) !== 'unauthenticated'">
+    <button class="btn btn-outline-secondary w-100" (click)="logout()">Logout</button>
+  </div>
+</div>
