@@ -31,7 +31,7 @@ export class FirebasePatientRepository implements IPatientRepository {
     } as Patient;
   }
 
-  async list(tenantId: string, page = 1, limit = 25) {
+  async list(tenantId: string, page = 1, limit = 25): Promise<{ items: Patient[]; total: number }> {
     // return dummy data
     const items = [
       {
@@ -49,7 +49,7 @@ export class FirebasePatientRepository implements IPatientRepository {
         fullName: "Dummy Patient 2",
       },
     ] as Patient[];
-    return { items, total: items.length };
+    return Promise.resolve({ items, total: items.length });
   }
 
   async update(tenantId: string, id: string, patient: Partial<Patient>) {
