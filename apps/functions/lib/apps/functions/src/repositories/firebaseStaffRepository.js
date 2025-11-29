@@ -31,47 +31,60 @@ class FirebaseStaffRepository {
         this.collection = this.db.collection("staff");
     }
     async create(staff) {
-        const docRef = this.collection.doc();
-        const newStaff = { ...staff, id: docRef.id };
-        await docRef.set(newStaff);
-        return newStaff;
+        // return dummy data
+        return {
+            ...staff,
+            id: "1",
+        };
     }
     async findById(id, hospitalId) {
-        const doc = await this.collection.doc(id).get();
-        if (!doc.exists) {
-            return null;
-        }
-        const staff = doc.data();
-        return staff.hospitalId === hospitalId ? staff : null;
+        // return dummy data
+        return {
+            id: id,
+            hospitalId: hospitalId,
+            userId: "1",
+            role: "Doctor",
+        };
     }
     async findByUserId(userId, hospitalId) {
-        const snapshot = await this.collection
-            .where("userId", "==", userId)
-            .where("hospitalId", "==", hospitalId)
-            .limit(1)
-            .get();
-        if (snapshot.empty) {
-            return null;
-        }
-        return snapshot.docs[0].data();
+        // return dummy data
+        return {
+            id: "1",
+            hospitalId: hospitalId,
+            userId: userId,
+            role: "Doctor",
+        };
     }
     async findAll(hospitalId) {
-        const snapshot = await this.collection.where("hospitalId", "==", hospitalId).get();
-        return snapshot.docs.map(doc => doc.data());
+        // return dummy data
+        return [
+            {
+                id: "1",
+                hospitalId: hospitalId,
+                userId: "1",
+                role: "Doctor",
+            },
+            {
+                id: "2",
+                hospitalId: hospitalId,
+                userId: "2",
+                role: "Nurse",
+            },
+        ];
     }
     async update(id, staff) {
-        await this.collection.doc(id).update(staff);
-        const updatedDoc = await this.collection.doc(id).get();
-        return updatedDoc.data();
+        // return dummy data
+        return {
+            id: id,
+            hospitalId: "1",
+            userId: "1",
+            role: "Doctor",
+            ...staff,
+        };
     }
     async delete(id, hospitalId) {
-        const staff = await this.findById(id, hospitalId);
-        if (staff) {
-            await this.collection.doc(id).delete();
-        }
-        else {
-            throw new Error("Staff not found or you do not have permission to delete it.");
-        }
+        // do nothing
+        return;
     }
 }
 exports.FirebaseStaffRepository = FirebaseStaffRepository;

@@ -9,33 +9,58 @@ export class FirebasePatientRepository implements IPatientRepository {
   private col = db.collection('patients');
 
   async create(tenantId: string, patient: Partial<Patient>) {
-    const ref = this.col.doc();
-    const now = new Date().toISOString();
-    const data: Patient = { id: ref.id, tenantId, createdAt: now, updatedAt: now, fullName: patient.fullName || '', ...patient } as Patient;
-    await ref.set(data);
-    return data;
+    // return dummy data
+    return {
+      id: "1",
+      tenantId: tenantId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      fullName: patient.fullName || "Dummy Patient",
+      ...patient
+    } as Patient;
   }
 
   async getById(tenantId: string, id: string) {
-    const snap = await this.col.doc(id).get();
-    if (!snap.exists) return null;
-    const data = snap.data() as Patient;
-    return data.tenantId === tenantId ? data : null;
+    // return dummy data
+    return {
+      id: id,
+      tenantId: tenantId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      fullName: "Dummy Patient",
+    } as Patient;
   }
 
   async list(tenantId: string, page = 1, limit = 25) {
-    const snapshot = await this.col.where('tenantId', '==', tenantId).limit(limit).get();
-    const items = snapshot.docs.map(d => d.data() as Patient);
+    // return dummy data
+    const items = [
+      {
+        id: "1",
+        tenantId: tenantId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        fullName: "Dummy Patient 1",
+      },
+      {
+        id: "2",
+        tenantId: tenantId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        fullName: "Dummy Patient 2",
+      },
+    ] as Patient[];
     return { items, total: items.length };
   }
 
   async update(tenantId: string, id: string, patient: Partial<Patient>) {
-    const existing = await this.getById(tenantId, id);
-    if (!existing) throw new Error('Patient not found');
-
-    const now = new Date().toISOString();
-    const data = { ...patient, updatedAt: now };
-    await this.col.doc(id).update(data);
-    return { ...existing, ...data };
+    // return dummy data
+    return {
+      id: id,
+      tenantId: tenantId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      fullName: patient.fullName || "Dummy Patient",
+      ...patient
+    } as Patient;
   }
 }

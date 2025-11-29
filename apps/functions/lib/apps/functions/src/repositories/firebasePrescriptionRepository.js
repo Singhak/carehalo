@@ -31,40 +31,67 @@ class FirebasePrescriptionRepository {
         this.collection = this.db.collection("prescriptions");
     }
     async create(prescription) {
-        const docRef = this.collection.doc();
-        const newPrescription = { ...prescription, id: docRef.id };
-        await docRef.set(newPrescription);
-        return newPrescription;
+        // return dummy data
+        return {
+            ...prescription,
+            id: "1",
+        };
     }
     async findById(id, hospitalId) {
-        const doc = await this.collection.doc(id).get();
-        if (!doc.exists) {
-            return null;
-        }
-        const prescription = doc.data();
-        return prescription.hospitalId === hospitalId ? prescription : null;
+        // return dummy data
+        return {
+            id: id,
+            hospitalId: hospitalId,
+            patientId: "1",
+            medication: "Dummy Medication",
+            dosage: "10mg",
+            frequency: "Once a day",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+        };
     }
     async findAll(hospitalId, patientId) {
-        let query = this.collection.where("hospitalId", "==", hospitalId);
-        if (patientId) {
-            query = query.where("patientId", "==", patientId);
-        }
-        const snapshot = await query.get();
-        return snapshot.docs.map(doc => doc.data());
+        // return dummy data
+        return [
+            {
+                id: "1",
+                hospitalId: hospitalId,
+                patientId: "1",
+                medication: "Dummy Medication 1",
+                dosage: "10mg",
+                frequency: "Once a day",
+                startDate: new Date().toISOString(),
+                endDate: new Date().toISOString(),
+            },
+            {
+                id: "2",
+                hospitalId: hospitalId,
+                patientId: "2",
+                medication: "Dummy Medication 2",
+                dosage: "20mg",
+                frequency: "Twice a day",
+                startDate: new Date().toISOString(),
+                endDate: new Date().toISOString(),
+            },
+        ];
     }
     async update(id, prescription) {
-        await this.collection.doc(id).update(prescription);
-        const updatedDoc = await this.collection.doc(id).get();
-        return updatedDoc.data();
+        // return dummy data
+        return {
+            id: id,
+            hospitalId: "1",
+            patientId: "1",
+            medication: "Dummy Medication",
+            dosage: "10mg",
+            frequency: "Once a day",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            ...prescription,
+        };
     }
     async delete(id, hospitalId) {
-        const prescription = await this.findById(id, hospitalId);
-        if (prescription) {
-            await this.collection.doc(id).delete();
-        }
-        else {
-            throw new Error("Prescription not found or you do not have permission to delete it.");
-        }
+        // do nothing
+        return;
     }
 }
 exports.FirebasePrescriptionRepository = FirebasePrescriptionRepository;
