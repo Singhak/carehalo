@@ -11,6 +11,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Prescription } from '@cflock/shared-models';
 import { PrescriptionService } from '../core/prescription.service';
+import { EmptyStateComponent } from '../core/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-prescriptions',
@@ -26,6 +27,7 @@ import { PrescriptionService } from '../core/prescription.service';
     MatFormFieldModule,
     MatProgressBarModule,
     MatCardModule,
+    EmptyStateComponent
   ],
 })
 export class PrescriptionsComponent implements OnInit, OnDestroy, AfterViewInit {

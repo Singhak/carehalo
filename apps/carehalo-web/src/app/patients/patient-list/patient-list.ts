@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PatientsService } from '../patient.service';
 import { Patient } from '@cflock/shared-models';
+import { EmptyStateComponent } from 'src/app/core/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-patient-list',
@@ -22,6 +23,7 @@ import { Patient } from '@cflock/shared-models';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    EmptyStateComponent,
   ],
   templateUrl: './patient-list.html',
   styleUrls: ['./patient-list.scss'],

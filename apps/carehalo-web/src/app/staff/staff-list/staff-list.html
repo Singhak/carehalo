@@ -15,7 +15,10 @@
       />
     </mat-form-field>
 
+    <app-empty-state *ngIf="rowData.length === 0"></app-empty-state>
+
     <ag-grid-angular
+      *ngIf="rowData.length > 0"
       style="width: 100%; height: 500px;"
       class="ag-theme-alpine"
       [rowData]="rowData"

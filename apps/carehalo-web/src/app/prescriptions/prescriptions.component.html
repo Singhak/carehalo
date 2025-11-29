@@ -1,3 +1,4 @@
+
 <div class="container">
   <div class="d-flex justify-content-between align-items-center table-header">
     <h2 class="mb-0">Prescriptions</h2>
@@ -17,7 +18,8 @@
     <div *ngIf="error" class="error-message">
       {{ error }}
     </div>
-    <div class="table-container">
+    <app-empty-state *ngIf="!loading && !error && dataSource.data.length === 0"></app-empty-state>
+    <div class="table-container" [hidden]="!dataSource.data.length">
       <table mat-table [dataSource]="dataSource" matSort class="table table-striped table-hover mb-0" *ngIf="!loading && !error">
 
         <!-- Patient ID Column -->

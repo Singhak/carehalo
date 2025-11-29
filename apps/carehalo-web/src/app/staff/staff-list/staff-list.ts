@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { StaffService } from '../staff.service';
 import { Staff } from '@cflock/shared-models';
+import { EmptyStateComponent } from '../../core/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-staff-list',
@@ -22,6 +23,7 @@ import { Staff } from '@cflock/shared-models';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    EmptyStateComponent
   ],
   templateUrl: './staff-list.html',
   styleUrls: ['./staff-list.scss'],
