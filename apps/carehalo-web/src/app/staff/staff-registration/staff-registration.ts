@@ -35,11 +35,6 @@ export class StaffRegistration {
     },
     { name: 'email', label: 'Email', type: 'email', required: true, gridColumn: 'span 6' },
     { name: 'phone', label: 'Phone', type: 'phone', gridColumn: 'span 6' },
-    { name: 'address.street', label: 'Street', type: 'text', gridColumn: 'span 12' },
-    { name: 'address.city', label: 'City', type: 'text', gridColumn: 'span 4' },
-    { name: 'address.state', label: 'State', type: 'text', gridColumn: 'span 4' },
-    { name: 'address.zip', label: 'Pincode', type: 'text', gridColumn: 'span 4' },
-    { name: 'address.country', label: 'Country', type: 'text', gridColumn: 'span 12' },
     {
       name: 'degree',
       label: 'Degree',
@@ -67,6 +62,11 @@ export class StaffRegistration {
       conditionalDisplay: (formValue) => formValue.role === 'doctor',
       gridColumn: 'span 4',
     },
+    { name: 'address.street', label: 'Street', type: 'text', gridColumn: 'span 12' },
+    { name: 'address.city', label: 'City', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.state', label: 'State', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.zip', label: 'Pincode', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.country', label: 'Country', type: 'text', gridColumn: 'span 12' },
   ];
 
   constructor(private staffService: StaffService, private router: Router, private toast: ToastService) {}
