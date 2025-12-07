@@ -31,10 +31,13 @@ export const generatePrescriptionPdf = async (req: Request, res: Response) => {
 
     const doc = new PDFDocument();
 
+    const doctorName = doctorDetails ? [doctorDetails.firstName, doctorDetails.lastName].filter(Boolean).join(" ") : "";
+    const patientName = patientDetails ? [patientDetails.firstName, patientDetails.middleName, patientDetails.lastName].filter(Boolean).join(" ") : "N/A";
+
     // Header
     doc.fontSize(20).text(hospitalDetails?.name || "Cflock Hospital", { align: "center" });
     if (doctorDetails) {
-      doc.fontSize(12).text(`Dr. ${doctorDetails.name}, ${doctorDetails.degree || ''}`, { align: "center" });
+      doc.fontSize(12).text(`Dr. ${doctorName}, ${doctorDetails.degree || ''}`, { align: "center" });
       doc.fontSize(10).text(doctorDetails.timing || '', { align: "center" });
     }
     doc.moveDown();
@@ -42,7 +45,7 @@ export const generatePrescriptionPdf = async (req: Request, res: Response) => {
     // Prescription details
     doc.fontSize(14).text("Prescription", { underline: true });
     doc.moveDown();
-    doc.fontSize(12).text(`Patient: ${patientDetails?.fullName || 'N/A'}`);
+    doc.fontSize(12).text(`Patient: ${patientName}`);
     doc.text(`Date: ${new Date().toLocaleDateString()}`);
     doc.moveDown();
     doc.text(`Medication: ${prescription.medication}`);
