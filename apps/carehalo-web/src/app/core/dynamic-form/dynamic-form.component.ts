@@ -26,13 +26,15 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['formFields'] && this.formFields && this.formFields.length) {
-      this.createForm();
-    }
+    setTimeout(() => {
+      if (changes['formFields'] && this.formFields && this.formFields.length) {
+        this.createForm();
+      }
 
-    if (changes['initialData'] && this.form && this.initialData) {
-      this.form.patchValue(this.initialData);
-    }
+      if (changes['initialData'] && this.form && this.initialData) {
+        this.form.patchValue(this.initialData);
+      }
+    }, 0);
   }
 
   createForm() {
