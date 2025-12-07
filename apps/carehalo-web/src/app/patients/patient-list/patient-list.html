@@ -27,6 +27,8 @@
       (gridReady)="onGridReady($event)"
       [pagination]="true"
       [paginationPageSize]="10"
+      [isExternalFilterPresent]="isExternalFilterPresent.bind(this)"
+      [doesExternalFilterPass]="doesExternalFilterPass.bind(this)"
     >
     </ag-grid-angular>
   </mat-card-content>

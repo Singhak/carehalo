@@ -3,7 +3,7 @@ import { Component, OnInit, forwardRef, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, ICellRendererParams } from 'ag-grid-community';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,13 +37,21 @@ export class PatientListComponent implements OnInit {
         return `${params.data.firstName} ${params.data.middleName || ''} ${params.data.lastName || ''}`.trim();
       },
       sortable: true,
-      filter: 'agTextColumnFilter',
     },
-    { headerName: 'Date of Birth', field: 'dob', sortable: true, filter: 'agTextColumnFilter' },
-    { headerName: 'Email', field: 'email', sortable: true, filter: 'agTextColumnFilter' },
+    {
+      headerName: 'Contact Info',
+      valueGetter: (params) => {
+        const dob = params.data.dob ? `DOB: ${new Date(params.data.dob).toLocaleDateString()}` : '';
+        const phone = params.data.phone ? `Phone: ${params.data.phone}` : '';
+        const email = params.data.email ? `Email: ${params.data.email}` : '';
+        return [dob, phone, email].filter(Boolean).join('\n');
+      },
+      cellStyle: { 'white-space': 'pre-line' },
+      sortable: false,
+    },
     {
       headerName: 'Actions',
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams) => {
         return `<a href="/patients/${params.data.id}/edit" mat-button color="primary">Edit</a>`;
       },
       flex: 1,
@@ -54,9 +62,11 @@ export class PatientListComponent implements OnInit {
     flex: 1,
     minWidth: 150,
     resizable: true,
+    filter: true,
   };
 
   public rowData: Patient[] = [];
+  private externalFilterValue: string = '';
 
   constructor(
     @Inject(forwardRef(() => PatientsService)) private patientsService: PatientsService
@@ -75,23 +85,26 @@ export class PatientListComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.gridApi.setFilterModel({
-      firstName: {
-        filterType: 'text',
-        type: 'contains',
-        filter: filterValue,
-      },
-      middleName: {
-        filterType: 'text',
-        type: 'contains',
-        filter: filterValue,
-      },
-      lastName: {
-        filterType: 'text',
-        type: 'contains',
-        filter: filterValue,
-      },
-    });
+    this.externalFilterValue = (event.target as HTMLInputElement).value;
+    this.gridApi.onFilterChanged();
+  }
+
+  isExternalFilterPresent(): boolean {
+    return this.externalFilterValue.length > 0;
+  }
+
+  doesExternalFilterPass(node: any): boolean {
+    const { firstName, middleName, lastName, email, phone, dob } = node.data;
+    const filterValue = this.externalFilterValue.toLowerCase();
+
+    const name = `${firstName} ${middleName || ''} ${lastName || ''}`.toLowerCase();
+    const dobString = dob ? new Date(dob).toLocaleDateString().toLowerCase() : '';
+
+    return (
+      name.includes(filterValue) ||
+      (email && email.toLowerCase().includes(filterValue)) ||
+      (phone && phone.toLowerCase().includes(filterValue)) ||
+      dobString.includes(filterValue)
+    );
   }
 }
