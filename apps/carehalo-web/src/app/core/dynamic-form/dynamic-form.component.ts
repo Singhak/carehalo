@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { FormField } from './form-field.model';
 
 @Component({
@@ -20,40 +20,59 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   showSuccess: boolean = false;
 
   ngOnInit() {
-    // ensure form is created if formFields were already provided
     if (this.formFields && this.formFields.length) {
       this.createForm();
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // if formFields input arrives/changes, (re)create the form so controls exist
     if (changes['formFields'] && this.formFields && this.formFields.length) {
       this.createForm();
     }
 
-    // when initial data changes, patch values into the existing form
-    if (changes['initialData'] && this.form) {
-      // guard: only patch if initialData is an object
-      if (this.initialData) {
-        this.form.patchValue(this.initialData);
-      }
+    if (changes['initialData'] && this.form && this.initialData) {
+      this.form.patchValue(this.initialData);
     }
   }
 
   createForm() {
-    const formGroup: { [key: string]: FormControl } = {};
+    this.form = new FormGroup({});
     this.formFields.forEach(field => {
-      const value = this.initialData ? this.initialData[field.name] : '';
-      const validators = [] as any[];
-      if (field.required) validators.push(Validators.required);
-      if (field.type === 'email') validators.push(Validators.email);
-      // phone: digits, plus, hyphen, parentheses and spaces
-      if (field.type === 'phone') validators.push(Validators.pattern('^[0-9+\\-() ]+$'));
-      if (field.pattern) validators.push(Validators.pattern(field.pattern));
-      formGroup[field.name] = new FormControl(value, validators);
+      this.createControl(field);
     });
-    this.form = new FormGroup(formGroup);
+  }
+
+  createControl(field: FormField) {
+    const { name, required, type, pattern } = field;
+    const validators = [] as any[];
+    if (required) validators.push(Validators.required);
+    if (type === 'email') validators.push(Validators.email);
+    if (type === 'phone') validators.push(Validators.pattern('^[0-9+\\-() ]+$'));
+    if (pattern) validators.push(Validators.pattern(pattern));
+
+    if (name.includes('.')) {
+      const parts = name.split('.');
+      let currentGroup: FormGroup = this.form;
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (!currentGroup.get(parts[i])) {
+          currentGroup.addControl(parts[i], new FormGroup({}));
+        }
+        currentGroup = currentGroup.get(parts[i]) as FormGroup;
+      }
+      currentGroup.addControl(parts[parts.length - 1], new FormControl(this.getInitialValue(name), validators));
+    } else {
+      this.form.addControl(name, new FormControl(this.getInitialValue(name), validators));
+    }
+  }
+
+  getInitialValue(name: string): any {
+    if (!this.initialData) {
+      return '';
+    }
+    if (name.includes('.')) {
+      return name.split('.').reduce((acc, part) => acc && acc[part], this.initialData) || '';
+    }
+    return this.initialData[name] || '';
   }
 
   @Input() submitButtonText: string = 'Submit';
@@ -64,7 +83,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       this.formSubmit.emit(this.form.value);
       if (this.resetOnSubmit) {
         this.form.reset();
-        // show a transient success banner for better UX
         this.showSuccess = true;
         setTimeout(() => this.showSuccess = false, 3000);
       }
@@ -78,7 +96,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     return true;
   }
 
-  getControl(name: string) {
+  getControl(name: string): AbstractControl | null {
     return this.form.get(name);
   }
 }

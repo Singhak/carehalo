@@ -5,6 +5,7 @@ import { FormField } from '../../core/dynamic-form/form-field.model';
 import { StaffService } from '../staff.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Staff } from '@cflock/shared-models';
 
 @Component({
   selector: 'app-staff-edit',
@@ -39,12 +40,16 @@ export class StaffEditComponent implements OnInit {
     },
     { name: 'email', label: 'Email', type: 'email', required: true },
     { name: 'phone', label: 'Phone', type: 'phone' },
-    { name: 'address', label: 'Address', type: 'textarea' },
+    { name: 'address.street', label: 'Street', type: 'text' },
+    { name: 'address.city', label: 'City', type: 'text' },
+    { name: 'address.state', label: 'State', type: 'text' },
+    { name: 'address.zip', label: 'Pincode', type: 'text' },
+    { name: 'address.country', label: 'Country', type: 'text' },
     { name: 'degree', label: 'Degree', type: 'text', conditionalDisplay: (formValue) => formValue.role === 'doctor' },
     { name: 'timing', label: 'Timing', type: 'text', conditionalDisplay: (formValue) => formValue.role === 'doctor' },
   ];
 
-  staff: any = null;
+  staff?: Staff;
   loaded = false;
 
   constructor(private staffService: StaffService, private route: ActivatedRoute, private router: Router, private toast: ToastService) {}
@@ -58,7 +63,7 @@ export class StaffEditComponent implements OnInit {
     }
     try {
       const res: any = await this.staffService.get(id);
-      this.staff = res;
+      this.staff = res as Staff;
     } catch (err) {
       console.error('Error loading staff', err);
     } finally {

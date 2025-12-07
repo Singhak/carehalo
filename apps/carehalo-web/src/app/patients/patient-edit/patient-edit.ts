@@ -19,7 +19,11 @@ export class PatientEditComponent implements OnInit {
     { name: 'dob', label: 'Date of Birth', type: 'date' },
     { name: 'phone', label: 'Phone', type: 'text' },
     { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'address', label: 'Address', type: 'text' },
+    { name: 'address.street', label: 'Street', type: 'text' },
+    { name: 'address.city', label: 'City', type: 'text' },
+    { name: 'address.state', label: 'State', type: 'text' },
+    { name: 'address.zip', label: 'Pincode', type: 'text' },
+    { name: 'address.country', label: 'Country', type: 'text' },
   ];
 
   constructor(
@@ -29,22 +33,18 @@ export class PatientEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.patientsService.get(id).then(patient => {
+    const patientId = this.route.snapshot.paramMap.get('id');
+    if (patientId) {
+      this.patientsService.get(patientId).then(patient => {
         this.patient = patient as Patient;
       });
     }
   }
 
-  async onSubmit(patientData: Patient) {
-    if (this.patient && this.patient.id) {
-      try {
-        await this.patientsService.update(this.patient.id, patientData);
-        this.router.navigate(['/patients']);
-      } catch (error) {
-        console.error('Error updating patient', error);
-      }
+  async onSubmit(patient: Patient) {
+    if (this.patient) {
+      await this.patientsService.update(this.patient.id, patient);
+      this.router.navigate(['/patients']);
     }
   }
 }
