@@ -12,6 +12,7 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 1.5rem;
+  row-gap: 2rem; /* Add some extra space between rows for error messages */
 }
 
 @media (max-width: 768px) {
@@ -22,6 +23,7 @@
 }
 
 .form-field {
+  position: relative; /* Set position to relative to contain absolute children */
   grid-column: span 12; // Default to full width
   display: flex;
   flex-direction: column;
@@ -61,9 +63,13 @@ input:focus, select:focus, textarea:focus {
 }
 
 .error-message {
+  position: absolute; /* Position the error message absolutely */
+  bottom: -1.5rem; /* Position it below the form field */
+  left: 0;
   color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: -0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 button[type="submit"] {
@@ -78,6 +84,7 @@ button[type="submit"] {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
+  margin-top: 1rem; /* Add some margin to avoid overlapping with error messages */
 }
 
 button[type="submit"]:disabled {
