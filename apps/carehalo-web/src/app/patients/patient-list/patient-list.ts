@@ -40,13 +40,19 @@ export class PatientListComponent implements OnInit {
     },
     {
       headerName: 'Contact Info',
-      valueGetter: (params) => {
-        const dob = params.data.dob ? `DOB: ${new Date(params.data.dob).toLocaleDateString()}` : '';
-        const phone = params.data.phone ? `Phone: ${params.data.phone}` : '';
-        const email = params.data.email ? `Email: ${params.data.email}` : '';
-        return [dob, phone, email].filter(Boolean).join('\n');
+      cellRenderer: (params: ICellRendererParams) => {
+        const parts = [];
+        if (params.data.dob) {
+          parts.push(`<span>DOB: ${new Date(params.data.dob).toLocaleDateString()}</span>`);
+        }
+        if (params.data.phone) {
+          parts.push(`<span>Phone: ${params.data.phone}</span>`);
+        }
+        if (params.data.email) {
+          parts.push(`<span>Email: ${params.data.email}</span>`);
+        }
+        return `<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; height: 100%;">${parts.join('')}</div>`;
       },
-      cellStyle: { 'white-space': 'pre-line' },
       sortable: false,
     },
     {
@@ -63,6 +69,7 @@ export class PatientListComponent implements OnInit {
     minWidth: 150,
     resizable: true,
     filter: true,
+    autoHeight: true, // Enable auto height for cells
   };
 
   public rowData: Patient[] = [];
