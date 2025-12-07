@@ -15,7 +15,9 @@ export class FirebasePatientRepository implements IPatientRepository {
       tenantId: tenantId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      fullName: patient.fullName || "Dummy Patient",
+      firstName: patient.firstName || "Dummy",
+      middleName: patient.middleName || "Patient",
+      lastName: patient.lastName || "1",
       ...patient
     } as Patient;
   }
@@ -27,7 +29,8 @@ export class FirebasePatientRepository implements IPatientRepository {
       tenantId: tenantId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      fullName: "Dummy Patient",
+      firstName: "Dummy",
+      middleName: "Patient",
     } as Patient;
   }
 
@@ -39,14 +42,18 @@ export class FirebasePatientRepository implements IPatientRepository {
         tenantId: tenantId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        fullName: "Dummy Patient 1",
+        firstName: "Dummy",
+        middleName: "Patient",
+        lastName: "1",
       },
       {
         id: "2",
         tenantId: tenantId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        fullName: "Dummy Patient 2",
+        firstName: "Dummy",
+        middleName: "Patient",
+        lastName: "2",
       },
     ] as Patient[];
     return Promise.resolve({ items, total: items.length });
@@ -59,7 +66,9 @@ export class FirebasePatientRepository implements IPatientRepository {
       tenantId: tenantId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      fullName: patient.fullName || "Dummy Patient",
+      firstName: patient.firstName || "Dummy",
+      middleName: patient.middleName || "Patient",
+      lastName: patient.lastName,
       ...patient
     } as Patient;
   }

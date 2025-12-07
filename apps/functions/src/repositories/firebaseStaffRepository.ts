@@ -21,7 +21,8 @@ export class FirebaseStaffRepository implements IStaffRepository {
       id: id,
       hospitalId: hospitalId,
       userId: "1",
-      name: "Dr. Dummy",
+      firstName: "Dr.",
+      lastName: "Dummy",
       role: "doctor",
     };
   }
@@ -32,7 +33,8 @@ export class FirebaseStaffRepository implements IStaffRepository {
       id: "1",
       hospitalId: hospitalId,
       userId: userId,
-      name: "Dr. Dummy",
+      firstName: "Dr.",
+      lastName: "Dummy",
       role: "doctor",
     };
   }
@@ -44,14 +46,16 @@ export class FirebaseStaffRepository implements IStaffRepository {
         id: "1",
         hospitalId: hospitalId,
         userId: "1",
-        name: "Dr. Dummy",
+        firstName: "Dr.",
+        lastName: "Dummy",
         role: "doctor",
       },
       {
         id: "2",
         hospitalId: hospitalId,
         userId: "2",
-        name: "Nurse Dummy",
+        firstName: "Nurse",
+        lastName: "Dummy",
         role: "nurse",
       },
     ];
@@ -63,7 +67,8 @@ export class FirebaseStaffRepository implements IStaffRepository {
         id: id,
         hospitalId: "1",
         userId: "1",
-        name: "Dr. Dummy",
+        firstName: "Dr.",
+        lastName: "Dummy",
         role: "doctor",
     };
     return {
