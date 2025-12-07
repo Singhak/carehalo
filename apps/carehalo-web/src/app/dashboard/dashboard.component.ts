@@ -121,7 +121,7 @@ export class DashboardComponent implements OnInit {
 
   processDoctorPerformance(appointments: Appointment[], staff: Staff[]) {
     const doctors = staff.filter(s => s.role === 'doctor');
-    const doctorMap = new Map(doctors.map(d => [d.id, d.name]));
+    const doctorMap = new Map(doctors.map(d => [d.id, [d.firstName, d.lastName].filter(Boolean).join(' ')]));
     const doctorPerformance = new Map<string, number>();
 
     appointments.forEach(appointment => {

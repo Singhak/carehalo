@@ -54,7 +54,7 @@ export class CommunicationComponent implements OnInit {
       next: ({ patients, staff }) => {
         const patientUsers: UserView[] = patients.map(p => ({
           id: p.id,
-          name: p.fullName,
+          name: [p.firstName, p.middleName, p.lastName].filter(Boolean).join(' '),
           type: 'patient',
           phone: p.phone || '',
           selected: false,
@@ -62,7 +62,7 @@ export class CommunicationComponent implements OnInit {
 
         const staffUsers: UserView[] = staff.map(s => ({
           id: s.id,
-          name: s.name,
+          name: [s.firstName, s.lastName].filter(Boolean).join(' '),
           type: s.role === 'doctor' ? 'doctor' : 'staff',
           phone: s.phone || '',
           selected: false,
