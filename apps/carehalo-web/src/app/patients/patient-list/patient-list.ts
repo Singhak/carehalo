@@ -43,17 +43,16 @@ export class PatientListComponent implements OnInit {
       cellRenderer: (params: ICellRendererParams) => {
         const parts = [];
         if (params.data.dob) {
-          parts.push(`<span>DOB: ${new Date(params.data.dob).toLocaleDateString()}</span>`);
+          parts.push(`DOB: ${new Date(params.data.dob).toLocaleDateString()}`);
         }
         if (params.data.phone) {
-          parts.push(`<span>Phone: ${params.data.phone}</span>`);
+          parts.push(`Phone: ${params.data.phone}`);
         }
         if (params.data.email) {
-          parts.push(`<span>Email: ${params.data.email}</span>`);
+          parts.push(`Email: ${params.data.email}`);
         }
-        return `<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; height: 100%;">${parts.join('')}</div>`;
+        return parts.join(' ');
       },
-      autoHeight: true,
       sortable: false,
     },
     {
