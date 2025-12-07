@@ -82,14 +82,14 @@ export class PrescriptionCreationComponent implements OnInit {
         name: 'patientId',
         label: 'Patient',
         type: 'select',
-        options: this.patients.map(p => ({ value: p.id, label: p.fullName })),
+        options: this.patients.map(p => ({ value: p.id, label: [p.firstName, p.middleName, p.lastName].filter(Boolean).join(' ') })),
         required: true,
       },
       {
         name: 'staffId',
         label: 'Doctor',
         type: 'select',
-        options: this.staff.map(s => ({ value: s.id, label: s.name })),
+        options: this.staff.map(s => ({ value: s.id, label: [s.firstName, s.lastName].filter(Boolean).join(' ') })),
         required: true,
       },
       { name: 'medication', label: 'Medication', type: 'text', required: true },
@@ -122,11 +122,11 @@ export class PrescriptionCreationComponent implements OnInit {
 
   getPatientName(patientId: string): string {
     const patient = this.patients.find(p => p.id === patientId);
-    return patient ? patient.fullName : '';
+    return patient ? [patient.firstName, patient.middleName, patient.lastName].filter(Boolean).join(' ') : '';
   }
 
   getDoctorName(staffId: string): string {
     const doctor = this.staff.find(s => s.id === staffId);
-    return doctor ? doctor.name : '';
+    return doctor ? [doctor.firstName, doctor.lastName].filter(Boolean).join(' ') : '';
   }
 }
