@@ -1,7 +1,9 @@
 export interface Staff {
   id: string;
   userId: string; // Firebase Auth UID
-  name: string;
+  firstName: string;
+  middleName?: string;
+  lastName?: string;
   role: 'doctor' | 'nurse' | 'admin';
   hospitalId: string;
   degree?: string;

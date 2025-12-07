@@ -20,7 +20,9 @@ import { ToastService } from '../../core/toast/toast.service';
 })
 export class StaffRegistration {
   staffFormFields: FormField[] = [
-    { name: 'fullName', label: 'Full Name', type: 'text', required: true, gridColumn: 'span 6' },
+    { name: 'firstName', label: 'First Name', type: 'text', required: true, gridColumn: 'span 4' },
+    { name: 'middleName', label: 'Middle Name', type: 'text', gridColumn: 'span 4' },
+    { name: 'lastName', label: 'Last Name', type: 'text', gridColumn: 'span 4' },
     {
       name: 'role',
       label: 'Role',

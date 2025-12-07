@@ -1,7 +1,9 @@
 export interface Patient {
   id: string;
   tenantId: string;
-  fullName: string;
+  firstName: string;
+  middleName?: string;
+  lastName?: string;
   dob?: string;
   phone?: string;
   email?: string;

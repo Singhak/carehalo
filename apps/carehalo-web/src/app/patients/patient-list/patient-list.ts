@@ -31,7 +31,14 @@ import { EmptyStateComponent } from 'src/app/core/empty-state/empty-state.compon
 export class PatientListComponent implements OnInit {
   private gridApi!: GridApi<Patient>;
   public columnDefs: ColDef[] = [
-    { headerName: 'Name', field: 'fullName', sortable: true, filter: 'agTextColumnFilter' },
+    {
+      headerName: 'Name',
+      valueGetter: (params) => {
+        return `${params.data.firstName} ${params.data.middleName || ''} ${params.data.lastName || ''}`.trim();
+      },
+      sortable: true,
+      filter: 'agTextColumnFilter',
+    },
     { headerName: 'Date of Birth', field: 'dob', sortable: true, filter: 'agTextColumnFilter' },
     { headerName: 'Email', field: 'email', sortable: true, filter: 'agTextColumnFilter' },
     {
@@ -70,7 +77,17 @@ export class PatientListComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.gridApi.setFilterModel({
-      fullName: {
+      firstName: {
+        filterType: 'text',
+        type: 'contains',
+        filter: filterValue,
+      },
+      middleName: {
+        filterType: 'text',
+        type: 'contains',
+        filter: filterValue,
+      },
+      lastName: {
         filterType: 'text',
         type: 'contains',
         filter: filterValue,

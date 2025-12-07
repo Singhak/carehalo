@@ -19,7 +19,9 @@ import { FormField } from '../../core/dynamic-form/form-field.model';
 })
 export class PatientRegistration {
   patientFormFields: FormField[] = [
-    { name: 'fullName', label: 'Full Name', type: 'text', required: true, gridColumn: 'span 6' },
+    { name: 'firstName', label: 'First Name', type: 'text', required: true, gridColumn: 'span 4' },
+    { name: 'middleName', label: 'Middle Name', type: 'text', gridColumn: 'span 4' },
+    { name: 'lastName', label: 'Last Name', type: 'text', gridColumn: 'span 4' },
     { name: 'dob', label: 'Date of Birth', type: 'date', gridColumn: 'span 6' },
     { name: 'phone', label: 'Phone', type: 'text', gridColumn: 'span 6' },
     { name: 'email', label: 'Email', type: 'email', required: true, gridColumn: 'span 6' },

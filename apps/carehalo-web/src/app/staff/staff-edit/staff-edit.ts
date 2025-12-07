@@ -26,7 +26,9 @@ import { Staff } from '@cflock/shared-models';
 })
 export class StaffEditComponent implements OnInit {
   staffFormFields: FormField[] = [
-    { name: 'fullName', label: 'Full Name', type: 'text', required: true },
+    { name: 'firstName', label: 'First Name', type: 'text', required: true, gridColumn: 'span 4' },
+    { name: 'middleName', label: 'Middle Name', type: 'text', gridColumn: 'span 4' },
+    { name: 'lastName', label: 'Last Name', type: 'text', gridColumn: 'span 4' },
     {
       name: 'role',
       label: 'Role',
