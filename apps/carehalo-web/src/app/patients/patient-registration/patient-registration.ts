@@ -19,15 +19,15 @@ import { FormField } from '../../core/dynamic-form/form-field.model';
 })
 export class PatientRegistration {
   patientFormFields: FormField[] = [
-    { name: 'fullName', label: 'Full Name', type: 'text', required: true },
-    { name: 'dob', label: 'Date of Birth', type: 'date' },
-    { name: 'phone', label: 'Phone', type: 'text' },
-    { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'address.street', label: 'Street', type: 'text' },
-    { name: 'address.city', label: 'City', type: 'text' },
-    { name: 'address.state', label: 'State', type: 'text' },
-    { name: 'address.zip', label: 'Pincode', type: 'text' },
-    { name: 'address.country', label: 'Country', type: 'text' },
+    { name: 'fullName', label: 'Full Name', type: 'text', required: true, gridColumn: 'span 6' },
+    { name: 'dob', label: 'Date of Birth', type: 'date', gridColumn: 'span 6' },
+    { name: 'phone', label: 'Phone', type: 'text', gridColumn: 'span 6' },
+    { name: 'email', label: 'Email', type: 'email', required: true, gridColumn: 'span 6' },
+    { name: 'address.street', label: 'Street', type: 'text', gridColumn: 'span 12' },
+    { name: 'address.city', label: 'City', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.state', label: 'State', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.zip', label: 'Pincode', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.country', label: 'Country', type: 'text', gridColumn: 'span 12' },
   ];
 
   constructor(private patientsService: PatientsService) {}
