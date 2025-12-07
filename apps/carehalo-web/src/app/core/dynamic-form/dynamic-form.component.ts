@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { FormField } from './form-field.model';
@@ -19,6 +19,8 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   form: FormGroup = new FormGroup({});
   showSuccess: boolean = false;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnInit() {
     if (this.formFields && this.formFields.length) {
       this.createForm();
@@ -26,15 +28,10 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    setTimeout(() => {
-      if (changes['formFields'] && this.formFields && this.formFields.length) {
-        this.createForm();
-      }
-
-      if (changes['initialData'] && this.form && this.initialData) {
-        this.form.patchValue(this.initialData);
-      }
-    }, 0);
+    // When initialData is first supplied or changes, patch the form's values.
+    if (changes['initialData'] && this.form && this.initialData) {
+      this.form.patchValue(this.initialData);
+    }
   }
 
   createForm() {
@@ -42,6 +39,10 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     this.formFields.forEach(field => {
       this.createControl(field);
     });
+    // If we have initial data at creation time, patch it in.
+    if (this.initialData) {
+      this.form.patchValue(this.initialData);
+    }
   }
 
   createControl(field: FormField) {
@@ -52,6 +53,8 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     if (type === 'phone') validators.push(Validators.pattern('^[0-9+\\-() ]+$'));
     if (pattern) validators.push(Validators.pattern(pattern));
 
+    let initialValue = this.getInitialValue(name);
+
     if (name.includes('.')) {
       const parts = name.split('.');
       let currentGroup: FormGroup = this.form;
@@ -61,9 +64,9 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         }
         currentGroup = currentGroup.get(parts[i]) as FormGroup;
       }
-      currentGroup.addControl(parts[parts.length - 1], new FormControl(this.getInitialValue(name), validators));
+      currentGroup.addControl(parts[parts.length - 1], new FormControl(initialValue, validators));
     } else {
-      this.form.addControl(name, new FormControl(this.getInitialValue(name), validators));
+      this.form.addControl(name, new FormControl(initialValue, validators));
     }
   }
 
@@ -88,6 +91,9 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         this.showSuccess = true;
         setTimeout(() => this.showSuccess = false, 3000);
       }
+    } else {
+      // Mark all fields as touched to display validation errors
+      this.form.markAllAsTouched();
     }
   }
 
