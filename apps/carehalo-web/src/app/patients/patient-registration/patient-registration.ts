@@ -23,7 +23,11 @@ export class PatientRegistration {
     { name: 'dob', label: 'Date of Birth', type: 'date' },
     { name: 'phone', label: 'Phone', type: 'text' },
     { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'address', label: 'Address', type: 'text' },
+    { name: 'address.street', label: 'Street', type: 'text' },
+    { name: 'address.city', label: 'City', type: 'text' },
+    { name: 'address.state', label: 'State', type: 'text' },
+    { name: 'address.zip', label: 'Pincode', type: 'text' },
+    { name: 'address.country', label: 'Country', type: 'text' },
   ];
 
   constructor(private patientsService: PatientsService) {}

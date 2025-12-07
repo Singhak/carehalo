@@ -5,7 +5,13 @@ export interface Patient {
   dob?: string;
   phone?: string;
   email?: string;
-  address?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
+  };
   medicalRecordNumber?: string;
   createdAt?: string;
   updatedAt?: string;
