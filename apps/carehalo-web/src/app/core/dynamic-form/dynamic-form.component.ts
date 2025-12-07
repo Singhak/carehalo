@@ -28,9 +28,13 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // When initialData is first supplied or changes, patch the form's values.
+    if (changes['formFields'] && !changes['formFields'].firstChange) {
+      this.updateFormControls();
+    }
+
     if (changes['initialData'] && this.form && this.initialData) {
       this.form.patchValue(this.initialData);
+      this.cdr.detectChanges();
     }
   }
 
@@ -39,10 +43,29 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     this.formFields.forEach(field => {
       this.createControl(field);
     });
-    // If we have initial data at creation time, patch it in.
+
     if (this.initialData) {
       this.form.patchValue(this.initialData);
     }
+  }
+
+  updateFormControls() {
+    const existingControls = Object.keys(this.form.controls);
+    const newFieldNames = this.formFields.map(f => f.name);
+
+    // Remove controls that are no longer in formFields
+    existingControls.forEach(controlName => {
+      if (!newFieldNames.includes(controlName)) {
+        this.form.removeControl(controlName);
+      }
+    });
+
+    // Add new controls
+    this.formFields.forEach(field => {
+      if (!this.form.get(field.name)) {
+        this.createControl(field);
+      }
+    });
   }
 
   createControl(field: FormField) {
@@ -55,6 +78,8 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
     let initialValue = this.getInitialValue(name);
 
+    const newControl = new FormControl(initialValue, validators);
+
     if (name.includes('.')) {
       const parts = name.split('.');
       let currentGroup: FormGroup = this.form;
@@ -64,20 +89,15 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         }
         currentGroup = currentGroup.get(parts[i]) as FormGroup;
       }
-      currentGroup.addControl(parts[parts.length - 1], new FormControl(initialValue, validators));
+      currentGroup.addControl(parts[parts.length - 1], newControl);
     } else {
-      this.form.addControl(name, new FormControl(initialValue, validators));
+      this.form.addControl(name, newControl);
     }
   }
 
   getInitialValue(name: string): any {
-    if (!this.initialData) {
-      return '';
-    }
-    if (name.includes('.')) {
-      return name.split('.').reduce((acc, part) => acc && acc[part], this.initialData) || '';
-    }
-    return this.initialData[name] || '';
+    if (!this.initialData) return '';
+    return name.split('.').reduce((acc, part) => acc && acc[part], this.initialData) || '';
   }
 
   @Input() submitButtonText: string = 'Submit';
@@ -92,7 +112,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         setTimeout(() => this.showSuccess = false, 3000);
       }
     } else {
-      // Mark all fields as touched to display validation errors
       this.form.markAllAsTouched();
     }
   }
@@ -104,7 +123,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     return true;
   }
 
-  getControl(name: string): AbstractControl | null {
-    return this.form.get(name);
+  getControl(name: string): FormControl {
+    return this.form.get(name) as FormControl;
   }
 }

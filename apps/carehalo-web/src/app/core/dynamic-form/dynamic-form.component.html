@@ -2,29 +2,31 @@
   <h2 *ngIf="formTitle">{{ formTitle }}</h2>
   
   <div class="form-grid">
-    <div *ngFor="let field of formFields" [class.hidden]="!shouldDisplay(field)" class="form-field">
-      <label [for]="field.name">{{ field.label }}</label>
-      
-      <ng-container [ngSwitch]="field.type">
-        <input *ngSwitchCase="'text'" [type]="field.type" [id]="field.name" [formControlName]="field.name" [required]="field.required">
-        <input *ngSwitchCase="'email'" [type]="field.type" [id]="field.name" [formControlName]="field.name" [required]="field.required">
-        <input *ngSwitchCase="'password'" [type]="field.type" [id]="field.name" [formControlName]="field.name" [required]="field.required">
-        <input *ngSwitchCase="'date'" [type]="field.type" [id]="field.name" [formControlName]="field.name">
-        <input *ngSwitchCase="'phone'" type="tel" [id]="field.name" [formControlName]="field.name">
+    <ng-container *ngFor="let field of formFields">
+      <div *ngIf="shouldDisplay(field)" class="form-field">
+        <label [for]="field.name">{{ field.label }}</label>
         
-        <select *ngSwitchCase="'select'" [id]="field.name" [formControlName]="field.name">
-          <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
-        </select>
-        
-        <textarea *ngSwitchCase="'textarea'" [id]="field.name" [formControlName]="field.name" rows="4"></textarea>
-      </ng-container>
+        <ng-container [ngSwitch]="field.type">
+          <input *ngSwitchCase="'text'" [type]="field.type" [id]="field.name" [formControl]="getControl(field.name)">
+          <input *ngSwitchCase="'email'" [type]="field.type" [id]="field.name" [formControl]="getControl(field.name)">
+          <input *ngSwitchCase="'password'" [type]="field.type" [id]="field.name" [formControl]="getControl(field.name)">
+          <input *ngSwitchCase="'date'" [type]="field.type" [id]="field.name" [formControl]="getControl(field.name)">
+          <input *ngSwitchCase="'phone'" type="tel" [id]="field.name" [formControl]="getControl(field.name)">
+          
+          <select *ngSwitchCase="'select'" [id]="field.name" [formControl]="getControl(field.name)">
+            <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
+          </select>
+          
+          <textarea *ngSwitchCase="'textarea'" [id]="field.name" [formControl]="getControl(field.name)" rows="3"></textarea>
+        </ng-container>
 
-      <div *ngIf="getControl(field.name)?.invalid && (getControl(field.name)?.dirty || getControl(field.name)?.touched)" class="error-message">
-        <div *ngIf="getControl(field.name)?.errors?.['required']">{{ field.label }} is required.</div>
-        <div *ngIf="getControl(field.name)?.errors?.['email']">Please enter a valid email.</div>
-        <div *ngIf="getControl(field.name)?.errors?.['pattern']">Invalid format.</div>
+        <div *ngIf="getControl(field.name)?.invalid && (getControl(field.name)?.dirty || getControl(field.name)?.touched)" class="error-message">
+          <div *ngIf="getControl(field.name)?.errors?.['required']">{{ field.label }} is required.</div>
+          <div *ngIf="getControl(field.name)?.errors?.['email']">Please enter a valid email address.</div>
+          <div *ngIf="getControl(field.name)?.errors?.['pattern']">Invalid format.</div>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 
   <button type="submit" [disabled]="form.invalid">{{ submitButtonText }}</button>
