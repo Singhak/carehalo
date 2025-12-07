@@ -53,6 +53,7 @@ export class PatientListComponent implements OnInit {
         }
         return `<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; height: 100%;">${parts.join('')}</div>`;
       },
+      autoHeight: true,
       sortable: false,
     },
     {
@@ -69,7 +70,6 @@ export class PatientListComponent implements OnInit {
     minWidth: 150,
     resizable: true,
     filter: true,
-    autoHeight: true, // Enable auto height for cells
   };
 
   public rowData: Patient[] = [];
