@@ -3,7 +3,11 @@
   
   <div class="form-grid">
     <ng-container *ngFor="let field of formFields">
-      <div *ngIf="shouldDisplay(field)" class="form-field">
+      <div
+        *ngIf="shouldDisplay(field)"
+        class="form-field"
+        [style.grid-column]="field.gridColumn"
+      >
         <label [for]="field.name">{{ field.label }}</label>
         
         <ng-container [ngSwitch]="field.type">

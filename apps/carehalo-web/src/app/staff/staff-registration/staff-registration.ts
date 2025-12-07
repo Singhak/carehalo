@@ -20,7 +20,7 @@ import { ToastService } from '../../core/toast/toast.service';
 })
 export class StaffRegistration {
   staffFormFields: FormField[] = [
-    { name: 'fullName', label: 'Full Name', type: 'text', required: true },
+    { name: 'fullName', label: 'Full Name', type: 'text', required: true, gridColumn: 'span 6' },
     {
       name: 'role',
       label: 'Role',
@@ -31,16 +31,42 @@ export class StaffRegistration {
         { value: 'admin', label: 'Admin' },
       ],
       required: true,
+      gridColumn: 'span 6',
     },
-    { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'phone', label: 'Phone', type: 'phone' },
-    { name: 'address.street', label: 'Street', type: 'text' },
-    { name: 'address.city', label: 'City', type: 'text' },
-    { name: 'address.state', label: 'State', type: 'text' },
-    { name: 'address.zip', label: 'Pincode', type: 'text' },
-    { name: 'address.country', label: 'Country', type: 'text' },
-    { name: 'degree', label: 'Degree', type: 'text', conditionalDisplay: (formValue) => formValue.role === 'doctor' },
-    { name: 'timing', label: 'Timing', type: 'text', conditionalDisplay: (formValue) => formValue.role === 'doctor' },
+    { name: 'email', label: 'Email', type: 'email', required: true, gridColumn: 'span 6' },
+    { name: 'phone', label: 'Phone', type: 'phone', gridColumn: 'span 6' },
+    { name: 'address.street', label: 'Street', type: 'text', gridColumn: 'span 12' },
+    { name: 'address.city', label: 'City', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.state', label: 'State', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.zip', label: 'Pincode', type: 'text', gridColumn: 'span 4' },
+    { name: 'address.country', label: 'Country', type: 'text', gridColumn: 'span 12' },
+    {
+      name: 'degree',
+      label: 'Degree',
+      type: 'text',
+      conditionalDisplay: (formValue) => formValue.role === 'doctor',
+      gridColumn: 'span 4',
+    },
+    {
+      name: 'licenceNumber',
+      label: 'Licence Number',
+      type: 'text',
+      conditionalDisplay: (formValue) => formValue.role === 'doctor',
+      gridColumn: 'span 4',
+    },
+    {
+      name: 'speciality',
+      label: 'Speciality',
+      type: 'select',
+      options: [
+        { value: 'cardiology', label: 'Cardiology' },
+        { value: 'dermatology', label: 'Dermatology' },
+        { value: 'neurology', label: 'Neurology' },
+        { value: 'pediatrics', label: 'Pediatrics' },
+      ],
+      conditionalDisplay: (formValue) => formValue.role === 'doctor',
+      gridColumn: 'span 4',
+    },
   ];
 
   constructor(private staffService: StaffService, private router: Router, private toast: ToastService) {}
@@ -49,7 +75,6 @@ export class StaffRegistration {
     try {
       await this.staffService.create(staff);
       console.log('Staff created successfully');
-      // navigate back to staff list after creation
       this.toast.success('Staff created successfully');
       this.router.navigate(['/staff']);
     } catch (error) {
