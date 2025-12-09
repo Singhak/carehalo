@@ -10,5 +10,9 @@ export const PRESCRIPTIONS_ROUTES: Routes = [
   {
     path: 'new',
     component: PrescriptionCreationComponent
+  },
+  {
+    path: 'new/:patientId',
+    component: PrescriptionCreationComponent
   }
 ];

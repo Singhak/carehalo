@@ -22,6 +22,20 @@
           </select>
           
           <textarea *ngSwitchCase="'textarea'" [id]="field.name" [formControl]="getControl(field.name)" rows="3"></textarea>
+
+          <div *ngSwitchCase="'form-array'" [formArrayName]="field.name">
+            <h4>{{ field.label }}</h4>
+            <div *ngFor="let group of getFormArray(field.name).controls; let i=index" [formGroupName]="i" class="form-array-group">
+              <ng-container *ngFor="let subField of field.arrayFields ?? []">
+                <div class="form-field">
+                  <label [for]="subField.name + i">{{ subField.label }}</label>
+                  <input [type]="subField.type" [id]="subField.name + i" [formControlName]="subField.name">
+                </div>
+              </ng-container>
+              <button type="button" (click)="removeFormArrayGroup(field.name, i)">Remove</button>
+            </div>
+            <button type="button" (click)="addFormArrayGroup(field.name, field.arrayFields ?? [])">Add {{ field.label }}</button>
+          </div>
         </ng-container>
 
         <div *ngIf="getControl(field.name)?.invalid && (getControl(field.name)?.dirty || getControl(field.name)?.touched)" class="error-message">
