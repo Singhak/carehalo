@@ -1,0 +1,97 @@
+<div class="registration-container">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Staff Registration</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-section">
+          <h2>Personal Details</h2>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Middle Name</mat-label>
+              <input matInput formControlName="middleName">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="role">
+                <mat-option value="doctor">Doctor</mat-option>
+                <mat-option value="nurse">Nurse</mat-option>
+                <mat-option value="admin">Admin</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone">
+            </mat-form-field>
+          </div>
+          <ng-container *ngIf="form.get('role')?.value === 'doctor'">
+            <div class="form-row">
+              <mat-form-field class="form-field" style="flex: 1;">
+                <mat-label>Degree</mat-label>
+                <input matInput formControlName="degree">
+              </mat-form-field>
+              <mat-form-field class="form-field" style="flex: 1;">
+                <mat-label>Licence Number</mat-label>
+                <input matInput formControlName="licenceNumber">
+              </mat-form-field>
+              <mat-form-field class="form-field" style="flex: 1;">
+                <mat-label>Speciality</mat-label>
+                <mat-select formControlName="speciality">
+                  <mat-option value="cardiology">Cardiology</mat-option>
+                  <mat-option value="dermatology">Dermatology</mat-option>
+                  <mat-option value="neurology">Neurology</mat-option>
+                  <mat-option value="pediatrics">Pediatrics</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+        <div class="form-section">
+          <h2>Address</h2>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 2;">
+              <mat-label>Street</mat-label>
+              <input matInput formControlName="street">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>State</mat-label>
+              <input matInput formControlName="state">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Pincode</mat-label>
+              <input matInput formControlName="zip">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit">Create Staff</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

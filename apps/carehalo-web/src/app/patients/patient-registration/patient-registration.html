@@ -1,0 +1,74 @@
+<div class="registration-container">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Patient Registration</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-section">
+          <h2>Personal Details</h2>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Middle Name</mat-label>
+              <input matInput formControlName="middleName">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="dob">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="form-section">
+          <h2>Address</h2>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 2;">
+              <mat-label>Street</mat-label>
+              <input matInput formControlName="street">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>State</mat-label>
+              <input matInput formControlName="state">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Pincode</mat-label>
+              <input matInput formControlName="zip">
+            </mat-form-field>
+            <mat-form-field class="form-field" style="flex: 1;">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit">Register</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
