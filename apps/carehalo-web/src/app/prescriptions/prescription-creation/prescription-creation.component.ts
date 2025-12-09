@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { DynamicFormComponent } from '../../core/dynamic-form/dynamic-form.component';
 import { FormField } from '../../core/dynamic-form/form-field.model';
 import { PrescriptionService } from '../../core/prescription.service';
@@ -18,13 +19,19 @@ import { AuthService } from '../../core/auth.service';
       [formFields]="prescriptionFormFields"
       formTitle="New Prescription"
       (formSubmit)="onSubmit($event)"
+      [initialData]="initialData"
       submitButtonText="Create Prescription"
     ></app-dynamic-form>
     <div *ngIf="createdPrescription" class="prescription-summary">
       <h3>Prescription Created Successfully!</h3>
       <p><strong>Patient:</strong> {{ getPatientName(createdPrescription.patientId) }}</p>
       <p><strong>Doctor:</strong> {{ getDoctorName(createdPrescription.staffId) }}</p>
-      <p><strong>Medication:</strong> {{ createdPrescription.medication }}</p>
+      <h4>Medications:</h4>
+      <ul>
+        <li *ngFor="let med of createdPrescription.medications">
+          {{ med.medicationName }} ({{ med.dosage }}) - {{ med.instructions }}
+        </li>
+      </ul>
       <button (click)="sharePrescription()">Share via SMS</button>
     </div>
   `,
@@ -57,12 +64,14 @@ export class PrescriptionCreationComponent implements OnInit {
   createdPrescription: Prescription | null = null;
   patients: Patient[] = [];
   staff: Staff[] = [];
+  initialData: any = {};
 
   constructor(
     private prescriptionService: PrescriptionService,
     private patientService: PatientsService,
     private staffService: StaffService,
     private authService: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -73,6 +82,17 @@ export class PrescriptionCreationComponent implements OnInit {
       this.patients = patients;
       this.staff = staff.filter(s => s.role === 'doctor');
       this.initializeFormFields();
+
+      this.route.paramMap.subscribe(params => {
+        const patientId = params.get('patientId');
+        if (patientId) {
+          this.initialData = { patientId };
+          const patientField = this.prescriptionFormFields.find(field => field.name === 'patientId');
+          if (patientField) {
+            patientField.disabled = true;
+          }
+        }
+      });
     });
   }
 
@@ -92,11 +112,16 @@ export class PrescriptionCreationComponent implements OnInit {
         options: this.staff.map(s => ({ value: s.id, label: [s.firstName, s.lastName].filter(Boolean).join(' ') })),
         required: true,
       },
-      { name: 'medication', label: 'Medication', type: 'text', required: true },
-      { name: 'dosage', label: 'Dosage', type: 'text', required: true },
-      { name: 'frequency', label: 'Frequency', type: 'text', required: true },
-      { name: 'startDate', label: 'Start Date', type: 'date', required: true },
-      { name: 'endDate', label: 'End Date', type: 'date', required: true },
+      {
+        name: 'medications',
+        label: 'Medications',
+        type: 'form-array',
+        arrayFields: [
+          { name: 'medicationName', label: 'Medication', type: 'text', required: true },
+          { name: 'dosage', label: 'Dosage', type: 'text', required: true },
+          { name: 'instructions', label: 'Instructions', type: 'text', required: true },
+        ]
+      }
     ];
   }
 

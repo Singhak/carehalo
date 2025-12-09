@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { FormField } from './form-field.model';
 
 @Component({
@@ -14,12 +14,14 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   @Input() formFields: FormField[] = [];
   @Input() formTitle: string = '';
   @Input() initialData: any;
+  @Input() submitButtonText: string = 'Submit';
+  @Input() resetOnSubmit: boolean = false;
   @Output() formSubmit = new EventEmitter<any>();
 
   form: FormGroup = new FormGroup({});
   showSuccess: boolean = false;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder) {}
 
   ngOnInit() {
     if (this.formFields && this.formFields.length) {
@@ -29,7 +31,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formFields'] && !changes['formFields'].firstChange) {
-      this.updateFormControls();
+      this.createForm();
     }
 
     if (changes['initialData'] && this.form && this.initialData) {
@@ -39,60 +41,68 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   createForm() {
-    this.form = new FormGroup({});
+    this.form = this.fb.group({});
     this.formFields.forEach(field => {
-      this.createControl(field);
+        this.createControl(field);
     });
 
     if (this.initialData) {
-      this.form.patchValue(this.initialData);
+        this.form.patchValue(this.initialData);
     }
-  }
-
-  updateFormControls() {
-    const existingControls = Object.keys(this.form.controls);
-    const newFieldNames = this.formFields.map(f => f.name);
-
-    // Remove controls that are no longer in formFields
-    existingControls.forEach(controlName => {
-      if (!newFieldNames.includes(controlName)) {
-        this.form.removeControl(controlName);
-      }
-    });
-
-    // Add new controls
-    this.formFields.forEach(field => {
-      if (!this.form.get(field.name)) {
-        this.createControl(field);
-      }
-    });
   }
 
   createControl(field: FormField) {
-    const { name, required, type, pattern } = field;
-    const validators = [] as any[];
-    if (required) validators.push(Validators.required);
-    if (type === 'email') validators.push(Validators.email);
-    if (type === 'phone') validators.push(Validators.pattern('^[0-9+\\-() ]+$'));
-    if (pattern) validators.push(Validators.pattern(pattern));
-
-    let initialValue = this.getInitialValue(name);
-
-    const newControl = new FormControl(initialValue, validators);
-
-    if (name.includes('.')) {
-      const parts = name.split('.');
-      let currentGroup: FormGroup = this.form;
-      for (let i = 0; i < parts.length - 1; i++) {
-        if (!currentGroup.get(parts[i])) {
-          currentGroup.addControl(parts[i], new FormGroup({}));
-        }
-        currentGroup = currentGroup.get(parts[i]) as FormGroup;
-      }
-      currentGroup.addControl(parts[parts.length - 1], newControl);
+    if (field.type === 'form-array') {
+        const arrayData = this.getInitialValue(field.name) || [];
+        const formArray = this.fb.array(arrayData.map((item: any) => this.createFormArrayGroup(field.arrayFields ?? [], item)));
+        this.form.addControl(field.name, formArray);
     } else {
-      this.form.addControl(name, newControl);
+        const validators = this.getValidators(field);
+        const initialValue = this.getInitialValue(field.name);
+        const control = this.fb.control({ value: initialValue, disabled: field.disabled ?? false }, validators);
+
+        if (field.name.includes('.')) {
+            const parts = field.name.split('.');
+            let currentGroup: FormGroup = this.form;
+            for (let i = 0; i < parts.length - 1; i++) {
+                if (!currentGroup.get(parts[i])) {
+                    currentGroup.addControl(parts[i], this.fb.group({}));
+                }
+                currentGroup = currentGroup.get(parts[i]) as FormGroup;
+            }
+            currentGroup.addControl(parts[parts.length - 1], control);
+        } else {
+            this.form.addControl(field.name, control);
+        }
     }
+  }
+
+  createFormArrayGroup(fields: FormField[], data: any = {}): FormGroup {
+    const group = this.fb.group({});
+    fields.forEach(field => {
+        const validators = this.getValidators(field);
+        group.addControl(field.name, this.fb.control(data[field.name] || '', validators));
+    });
+    return group;
+  }
+
+  getValidators(field: FormField): any[] {
+    const validators: any[] = [];
+    if (field.required) validators.push(Validators.required);
+    if (field.type === 'email') validators.push(Validators.email);
+    if (field.type === 'phone') validators.push(Validators.pattern('^[0-9+\\-() ]+$'));
+    if (field.pattern) validators.push(Validators.pattern(field.pattern));
+    return validators;
+  }
+
+  addFormArrayGroup(arrayName: string, fields: FormField[]) {
+    const formArray = this.form.get(arrayName) as FormArray;
+    formArray.push(this.createFormArrayGroup(fields));
+  }
+
+  removeFormArrayGroup(arrayName: string, index: number) {
+    const formArray = this.form.get(arrayName) as FormArray;
+    formArray.removeAt(index);
   }
 
   getInitialValue(name: string): any {
@@ -100,12 +110,9 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     return name.split('.').reduce((acc, part) => acc && acc[part], this.initialData) || '';
   }
 
-  @Input() submitButtonText: string = 'Submit';
-  @Input() resetOnSubmit: boolean = false;
-
   onSubmit() {
     if (this.form.valid) {
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit(this.form.getRawValue());
       if (this.resetOnSubmit) {
         this.form.reset();
         this.showSuccess = true;
@@ -125,5 +132,9 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   getControl(name: string): FormControl {
     return this.form.get(name) as FormControl;
+  }
+
+  getFormArray(name: string): FormArray {
+    return this.form.get(name) as FormArray;
   }
 }
