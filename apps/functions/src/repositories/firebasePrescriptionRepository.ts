@@ -22,11 +22,11 @@ export class FirebasePrescriptionRepository implements IPrescriptionRepository {
       hospitalId: hospitalId,
       patientId: "1",
       staffId: "1",
-      medication: "Dummy Medication",
-      dosage: "10mg",
-      frequency: "Once a day",
-      startDate: new Date(),
-      endDate: new Date(),
+      medications: [
+        { medicationName: "Dummy Medication", dosage: "10mg", instructions: "Once a day" }
+      ],
+      date: new Date().toISOString(),
+      isActive: true,
     };
   }
 
@@ -38,38 +38,38 @@ export class FirebasePrescriptionRepository implements IPrescriptionRepository {
         hospitalId: hospitalId,
         patientId: "1",
         staffId: "1",
-        medication: "Dummy Medication 1",
-        dosage: "10mg",
-        frequency: "Once a day",
-        startDate: new Date(),
-        endDate: new Date(),
+        medications: [
+          { medicationName: "Dummy Medication 1", dosage: "10mg", instructions: "Once a day" }
+        ],
+        date: new Date().toISOString(),
+        isActive: true,
       },
       {
         id: "2",
         hospitalId: hospitalId,
         patientId: "2",
         staffId: "2",
-        medication: "Dummy Medication 2",
-        dosage: "20mg",
-        frequency: "Twice a day",
-        startDate: new Date(),
-        endDate: new Date(),
+        medications: [
+          { medicationName: "Dummy Medication 2", dosage: "20mg", instructions: "Twice a day" }
+        ],
+        date: new Date().toISOString(),
+        isActive: true,
       },
     ];
   }
 
   async update(id: string, prescription: Partial<Prescription>): Promise<Prescription> {
     // return dummy data
-    const existing = {
+    const existing: Prescription = {
       id: id,
       hospitalId: "1",
       patientId: "1",
       staffId: "1",
-      medication: "Dummy Medication",
-      dosage: "10mg",
-      frequency: "Once a day",
-      startDate: new Date(),
-      endDate: new Date(),
+      medications: [
+        { medicationName: "Dummy Medication", dosage: "10mg", instructions: "Once a day" }
+      ],
+      date: new Date().toISOString(),
+      isActive: true,
     };
     return {
       ...existing,
