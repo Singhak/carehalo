@@ -1,9 +1,12 @@
-
 import { Router } from "express";
-import { generatePrescriptionPdf } from "./prescriptionPrintoutController";
+import { PrescriptionPrintoutController } from "./prescriptionPrintoutController";
+import { FirebasePrescriptionRepository } from "../repositories/firebasePrescriptionRepository";
 
 const router = Router();
 
-router.get("/:id/print", generatePrescriptionPdf);
+const prescriptionRepository = new FirebasePrescriptionRepository();
+const prescriptionPrintoutController = new PrescriptionPrintoutController(prescriptionRepository);
+
+router.get("/:hospitalId/:id/print", prescriptionPrintoutController.generatePrintout.bind(prescriptionPrintoutController));
 
 export const prescriptionPrintoutRouter = router;
