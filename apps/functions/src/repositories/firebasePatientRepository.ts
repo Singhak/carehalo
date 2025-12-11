@@ -1,6 +1,6 @@
 
-import { IPatientRepository } from '../../../../libs/data-access-interfaces/patientRepository';
-import { Patient } from '../../../../libs/shared-models/patient';
+import { IPatientRepository } from '@cflock/data-access-interfaces';
+import { Patient } from '@cflock/shared-models';
 import * as admin from 'firebase-admin';
 
 const db = admin.firestore();
