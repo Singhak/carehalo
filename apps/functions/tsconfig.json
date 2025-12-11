@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "commonjs",
     "outDir": "lib",
-    "rootDir": "../..",
+    "rootDir": "src",
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -16,5 +16,5 @@
       "@cflock/data-access-interfaces": ["../../libs/data-access-interfaces"]
     }
   },
-  "include": ["src", "../../libs/**/*"]
+  "include": ["src"]
 }
